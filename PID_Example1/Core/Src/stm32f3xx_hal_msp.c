@@ -155,15 +155,15 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
 }
 
 /**
-* @brief TIM_Encoder MSP Initialization
+* @brief TIM_IC MSP Initialization
 * This function configures the hardware resources used in this example
-* @param htim_encoder: TIM_Encoder handle pointer
+* @param htim_ic: TIM_IC handle pointer
 * @retval None
 */
-void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef* htim_encoder)
+void HAL_TIM_IC_MspInit(TIM_HandleTypeDef* htim_ic)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-  if(htim_encoder->Instance==TIM1)
+  if(htim_ic->Instance==TIM1)
   {
   /* USER CODE BEGIN TIM1_MspInit 0 */
 
@@ -172,9 +172,12 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef* htim_encoder)
     __HAL_RCC_TIM1_CLK_ENABLE();
 
     __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
     /**TIM1 GPIO Configuration
     PC0     ------> TIM1_CH1
     PC1     ------> TIM1_CH2
+    PA10     ------> TIM1_CH3
+    PA11     ------> TIM1_CH4
     */
     GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -183,11 +186,25 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef* htim_encoder)
     GPIO_InitStruct.Alternate = GPIO_AF2_TIM1;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
+    GPIO_InitStruct.Pin = IN2_A_limit_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF6_TIM1;
+    HAL_GPIO_Init(IN2_A_limit_GPIO_Port, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = IN2_B_limit_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF11_TIM1;
+    HAL_GPIO_Init(IN2_B_limit_GPIO_Port, &GPIO_InitStruct);
+
   /* USER CODE BEGIN TIM1_MspInit 1 */
 
   /* USER CODE END TIM1_MspInit 1 */
   }
-  else if(htim_encoder->Instance==TIM2)
+  else if(htim_ic->Instance==TIM2)
   {
   /* USER CODE BEGIN TIM2_MspInit 0 */
 
@@ -196,9 +213,12 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef* htim_encoder)
     __HAL_RCC_TIM2_CLK_ENABLE();
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
     /**TIM2 GPIO Configuration
     PA0     ------> TIM2_CH1
     PA1     ------> TIM2_CH2
+    PB10     ------> TIM2_CH3
+    PB11     ------> TIM2_CH4
     */
     GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -206,6 +226,13 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef* htim_encoder)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = IN1_B_limit_Pin|IN1_A_limit_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* USER CODE BEGIN TIM2_MspInit 1 */
 
@@ -249,12 +276,12 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
     /**TIM16 GPIO Configuration
     PA6     ------> TIM16_CH1
     */
-    GPIO_InitStruct.Pin = Homing1_Pin;
+    GPIO_InitStruct.Pin = HomingA_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF1_TIM16;
-    HAL_GPIO_Init(Homing1_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(HomingA_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN TIM16_MspInit 1 */
 
@@ -268,16 +295,16 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
     /* Peripheral clock enable */
     __HAL_RCC_TIM17_CLK_ENABLE();
 
-    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
     /**TIM17 GPIO Configuration
-    PA7     ------> TIM17_CH1
+    PB9     ------> TIM17_CH1
     */
-    GPIO_InitStruct.Pin = Homing2_Pin;
+    GPIO_InitStruct.Pin = HomingB_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF1_TIM17;
-    HAL_GPIO_Init(Homing2_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(HomingB_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN TIM17_MspInit 1 */
 
@@ -336,14 +363,14 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
 
 }
 /**
-* @brief TIM_Encoder MSP De-Initialization
+* @brief TIM_IC MSP De-Initialization
 * This function freeze the hardware resources used in this example
-* @param htim_encoder: TIM_Encoder handle pointer
+* @param htim_ic: TIM_IC handle pointer
 * @retval None
 */
-void HAL_TIM_Encoder_MspDeInit(TIM_HandleTypeDef* htim_encoder)
+void HAL_TIM_IC_MspDeInit(TIM_HandleTypeDef* htim_ic)
 {
-  if(htim_encoder->Instance==TIM1)
+  if(htim_ic->Instance==TIM1)
   {
   /* USER CODE BEGIN TIM1_MspDeInit 0 */
 
@@ -354,14 +381,18 @@ void HAL_TIM_Encoder_MspDeInit(TIM_HandleTypeDef* htim_encoder)
     /**TIM1 GPIO Configuration
     PC0     ------> TIM1_CH1
     PC1     ------> TIM1_CH2
+    PA10     ------> TIM1_CH3
+    PA11     ------> TIM1_CH4
     */
     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_0|GPIO_PIN_1);
+
+    HAL_GPIO_DeInit(GPIOA, IN2_A_limit_Pin|IN2_B_limit_Pin);
 
   /* USER CODE BEGIN TIM1_MspDeInit 1 */
 
   /* USER CODE END TIM1_MspDeInit 1 */
   }
-  else if(htim_encoder->Instance==TIM2)
+  else if(htim_ic->Instance==TIM2)
   {
   /* USER CODE BEGIN TIM2_MspDeInit 0 */
 
@@ -372,8 +403,12 @@ void HAL_TIM_Encoder_MspDeInit(TIM_HandleTypeDef* htim_encoder)
     /**TIM2 GPIO Configuration
     PA0     ------> TIM2_CH1
     PA1     ------> TIM2_CH2
+    PB10     ------> TIM2_CH3
+    PB11     ------> TIM2_CH4
     */
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|GPIO_PIN_1);
+
+    HAL_GPIO_DeInit(GPIOB, IN1_B_limit_Pin|IN1_A_limit_Pin);
 
   /* USER CODE BEGIN TIM2_MspDeInit 1 */
 
@@ -415,7 +450,7 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
     /**TIM16 GPIO Configuration
     PA6     ------> TIM16_CH1
     */
-    HAL_GPIO_DeInit(Homing1_GPIO_Port, Homing1_Pin);
+    HAL_GPIO_DeInit(HomingA_GPIO_Port, HomingA_Pin);
 
   /* USER CODE BEGIN TIM16_MspDeInit 1 */
 
@@ -430,9 +465,9 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
     __HAL_RCC_TIM17_CLK_DISABLE();
 
     /**TIM17 GPIO Configuration
-    PA7     ------> TIM17_CH1
+    PB9     ------> TIM17_CH1
     */
-    HAL_GPIO_DeInit(Homing2_GPIO_Port, Homing2_Pin);
+    HAL_GPIO_DeInit(HomingB_GPIO_Port, HomingB_Pin);
 
   /* USER CODE BEGIN TIM17_MspDeInit 1 */
 

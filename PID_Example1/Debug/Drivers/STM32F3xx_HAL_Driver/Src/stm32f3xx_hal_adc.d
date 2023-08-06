@@ -1,4 +1,9 @@
-Core/Src/system_stm32f3xx.o: ../Core/Src/system_stm32f3xx.c \
+Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_adc.o: \
+ ../Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_adc.c \
+ ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h \
+ ../Core/Inc/stm32f3xx_hal_conf.h \
+ ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_rcc.h \
+ ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_def.h \
  ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f3xx.h \
  ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f302x8.h \
  ../Drivers/CMSIS/Include/core_cm4.h \
@@ -6,10 +11,6 @@ Core/Src/system_stm32f3xx.o: ../Core/Src/system_stm32f3xx.c \
  ../Drivers/CMSIS/Include/cmsis_compiler.h \
  ../Drivers/CMSIS/Include/cmsis_gcc.h \
  ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/system_stm32f3xx.h \
- ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h \
- ../Core/Inc/stm32f3xx_hal_conf.h \
- ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_rcc.h \
- ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_def.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_rcc_ex.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_gpio.h \
@@ -30,6 +31,10 @@ Core/Src/system_stm32f3xx.o: ../Core/Src/system_stm32f3xx.c \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim_ex.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart_ex.h
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:
+../Core/Inc/stm32f3xx_hal_conf.h:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_rcc.h:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_def.h:
 ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f3xx.h:
 ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f302x8.h:
 ../Drivers/CMSIS/Include/core_cm4.h:
@@ -37,10 +42,6 @@ Core/Src/system_stm32f3xx.o: ../Core/Src/system_stm32f3xx.c \
 ../Drivers/CMSIS/Include/cmsis_compiler.h:
 ../Drivers/CMSIS/Include/cmsis_gcc.h:
 ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/system_stm32f3xx.h:
-../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:
-../Core/Inc/stm32f3xx_hal_conf.h:
-../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_rcc.h:
-../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_def.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_rcc_ex.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_gpio.h:

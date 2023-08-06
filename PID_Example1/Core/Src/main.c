@@ -408,6 +408,7 @@ static void MX_TIM1_Init(void)
 
   TIM_Encoder_InitTypeDef sConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_IC_InitTypeDef sConfigIC = {0};
 
   /* USER CODE BEGIN TIM1_Init 1 */
 
@@ -419,6 +420,10 @@ static void MX_TIM1_Init(void)
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_IC_Init(&htim1) != HAL_OK)
+  {
+    Error_Handler();
+  }
   sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
   sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
   sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
@@ -436,6 +441,18 @@ static void MX_TIM1_Init(void)
   sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
+  sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
+  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
+  sConfigIC.ICFilter = 0;
+  if (HAL_TIM_IC_ConfigChannel(&htim1, &sConfigIC, TIM_CHANNEL_3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_IC_ConfigChannel(&htim1, &sConfigIC, TIM_CHANNEL_4) != HAL_OK)
   {
     Error_Handler();
   }
@@ -459,6 +476,7 @@ static void MX_TIM2_Init(void)
 
   TIM_Encoder_InitTypeDef sConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_IC_InitTypeDef sConfigIC = {0};
 
   /* USER CODE BEGIN TIM2_Init 1 */
 
@@ -469,6 +487,10 @@ static void MX_TIM2_Init(void)
   htim2.Init.Period = 65535;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_IC_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
   sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
   sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
   sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
@@ -485,6 +507,18 @@ static void MX_TIM2_Init(void)
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
+  sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
+  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
+  sConfigIC.ICFilter = 0;
+  if (HAL_TIM_IC_ConfigChannel(&htim2, &sConfigIC, TIM_CHANNEL_3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_IC_ConfigChannel(&htim2, &sConfigIC, TIM_CHANNEL_4) != HAL_OK)
   {
     Error_Handler();
   }
@@ -799,8 +833,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LD2_Pin|IN1_A_Pin|IN1_B_Pin|IN2_A_Pin
-                          |IN2_B_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(IN1_A_GPIO_Port, IN1_A_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, IN1_B_Pin|IN2_A_Pin|IN2_B_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -808,20 +847,32 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD2_Pin IN1_A_Pin IN1_B_Pin IN2_A_Pin
-                           IN2_B_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin|IN1_A_Pin|IN1_B_Pin|IN2_A_Pin
-                          |IN2_B_Pin;
+  /*Configure GPIO pin : LD2_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PC8 */
-  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  /*Configure GPIO pin : IN1_A_Pin */
+  GPIO_InitStruct.Pin = IN1_A_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(IN1_A_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : IN1_B_Pin IN2_A_Pin IN2_B_Pin */
+  GPIO_InitStruct.Pin = IN1_B_Pin|IN2_A_Pin|IN2_B_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : AordD_Pin */
+  GPIO_InitStruct.Pin = AordD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(AordD_GPIO_Port, &GPIO_InitStruct);
 
 }
 
@@ -853,67 +904,103 @@ void Transmit_DMA(UART_HandleTypeDef *UartHandle, uint8_t* aTxBuffer, uint16_t T
 	}
 }
 
+/**
+  * @brief Timer period elapsed interrupt function
+  * @param TIM_HandleTypeDef - Address of a MCU timer
+  * @retval None
+  * TIM6 Period = 0.005s. Frequency = 200Hz
+  * TIM2 is in encoder mode and stores the encoder's CNT values.
+  */
+/**
+	Using a FAULHABER 1524T102SR micro-motor with a Series 15/10 gearhead and a Series IE2-1024 encoder.
+	When I refer to the motor, I mean the combination of the micro-motor and gearhead. The rpm of the motor refers to the rpm of the gearhead.
+
+	I set the motor's rpm to 60 rev/min
+	= 1 rev / second
+
+	Motor spins at 60rpm, measured with a Tachometer (RPM spedometer)
+	The Gear ratio is 20 micro-motor rotations per gear revolution
+	Using encoder mode T1 and T2 (X4 capture mode) so the timer CNT register is updated on every edge of both channels.
+	Each revolution updates the CNT value by 4 in X4 mode.
+
+	The encoder will output 64 cts/motor rev * 20 motor/gear rev * 4 * 1 gear rev/s
+	= 5120 cts/sec
+	= 5120 cts/gear rev @ 1rev/sec
+
+	The code only captures the encoder CNTs every 5 ms = 0.005s
+	0.005s * 5120 cts/s = 25.6 cts
+
+	Therefore, the motor at 60rpm will increase the encoder count value by 25 or 26 CNTs.
+	TIM2 stores the current value of the encoder count.
+	The difference of the current and previous encoder values dictates the speed of the motor.
+	A difference of 25 CNTs signifies that the motor spins at 60rpm.
+
+	The speed will be displayed in revolutions per minute (rpm).
+	(# of cts in 0.005s frame) * (1/0.005seconds) * (60seconds/minute) * (1rev/5120cts) = rpm
+
+	The TIM2 value is set at 32767 (midpoint of 65535) as an offset so that negative counts are easier to deal with.
+	Example:
+		TIM2 register has a value of 0
+		Motor spins in negative direction at 60rpm
+		TIM2 will decrease by 25 CNTs
+		0-25 = 65510 CNTS
+		converting into a negative rpm is harder.
+	Easier method:
+		TIM2 set at 32767 (midpoint)
+		Motor spins in negative direction at 60rpm
+		TIM2 will decrease by 25 CNTs
+		32767-25 = 32742 CNTs
+		we can store the difference of the CNTs easily to calculate the motor's speed.
+
+	Calculate speed
+	reset encoder offset
+
+	add PID, target speed, and PWM to the motor later.
+
+	Keep the speed here in cts/0.005seconds
+* */
 HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim)
 {
 	if( htim -> Instance == TIM6 )
 	{
-		/*
-		 let rpm = 60 rev/min
-		 = 1 rev / second
-
-		 Encoder reads 64 cts/motor rev * 20 motor/gear rev * 4 * 1 gear rev/s
-		 = 5120 cts/sec
-		 = 5120 cts/gear rev @ 1rev/sec
-
-		 with a 5 ms interval between encoder reads = 0.005s
-		 0.005s * 5120 cts/s = 25.6 cts
-
-		 TIM2 will be reading encoder values
-
-		 speed displayed in revolutions per minute.
-		 (# of cts in 0.005s frame) * (1/0.005seconds) * (60seconds/minute) * (1rev/5120cts) = rpm
-
-		 encoder value is set at 32767 (midpoint of 65535) as an offset so that negative counts are easier to deal with.
-		 TIM2 0-25 = 65510 which makes getting an opposite rpm harder.
-
-		 first read encoder value
-		 Calculate speed
-		 reset encoder offset
-
-		 add PID, target speed, and PWM to the motor later.
-
-		 Keep the speed here in cts/0.005seconds
-		 * */
-
+		//First, read the encoder's value
+		//then resets value to the midpoint
 		EncVal = TIM2->CNT;
 		TIM2->CNT = 32767;
 
+		//Calculate speed in the form of CNTs per 5ms
+		//Calculate error
+		//Re-enable start boolean
 		Speed_TIM6_Measured = (int32_t)( (EncVal - 32767) );
 		Err = Speed_TIM6_Target - Speed_TIM6_Measured;
 		start = 1;
 
+		//PID calculations derived from wikipedia
+		//kind of hard to explain -> review and re explain later
 		dU = vKp * (Err - Err_1) + (vKi * Err) + ( vKd * ( Err - 2*Err_1 + Err_2 ) );
 		Uk = Uk_1 + dU;
 		Uk_1 = Uk;
 		Err_2 = Err_1;
 		Err_1 = Err;
 
-
+		//CCW is boolean that determines whether the motor spins clockwise or counter clockwise.
+		//Is set before the target speed is set.
+		//TIM15 is the PWM wave that controls how much voltage the motor driver receives.
 		if( CCW )
 		{
-			HAL_GPIO_WritePin (GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin (GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
+			HAL_GPIO_WritePin (GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin (GPIOC, GPIO_PIN_10, GPIO_PIN_SET);
 			TIM15 -> CCR1 = (uint32_t) ( -1.0 * (Uk/204.0) * 3214.0 );
 		}
 		else
 		{
-			HAL_GPIO_WritePin (GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
-			HAL_GPIO_WritePin (GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin (GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+			HAL_GPIO_WritePin (GPIOB, GPIO_PIN_10, GPIO_PIN_RESET);
 			TIM15 -> CCR1 = (uint32_t) ( (Uk/204.0) * 3214.0 );
 		}
-		//update the PWM value
 
-		//SINE PWM
+
+		//SINE PWM movement. The motor spins in a sinusoidal fashion according to the code below.
 		/*if( SINE_PWM[sin_i] < 0 )
 		{
 			HAL_GPIO_WritePin (GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
